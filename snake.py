@@ -69,6 +69,7 @@ def lose(sn):
     return False
 
 
+
 while running:
     if lost==False:
         screen.fill((255,255,255))
@@ -84,8 +85,11 @@ while running:
                     color = (0, 0, 0)
                     pg.draw.rect(screen, color, rect)
         
-        col_pos(snake)
-        col_pos([fruit],(255,128,0))
+        col_pos(snake)  #colorie le snake
+        
+        col_pos([snake[0]],(0,0,255))   #optionel, colorie la tete du snake
+
+        col_pos([fruit],(255,128,0))        #colorie le fruit
         pg.display.update()
         clock.tick(5)
         lost=lose(snake)
@@ -94,15 +98,14 @@ while running:
         pg.display.set_caption(f"Score: {score}")
     
     
-    p=False
+    p=False   #quand on appuie sur deux touches rapidement on peut faire un demi tour, d'ou l'utilite de cette variable
     for event in pg.event.get():
-        # chaque évênement à un type qui décrit la nature de l'évênement
-        # un type de pg.QUIT signifie que l'on a cliqué sur la "croix" de la fenêtre
+        
         if event.type == pg.QUIT:
             running = False
-        # un type de pg.KEYDOWN signifie que l'on a appuyé une touche du clavier
+        
         elif event.type == pg.KEYDOWN:
-            # si la touche est "Q" on veut quitter le programme
+            
             if event.key == pg.K_q:
                 running = False
             if event.key == pg.K_UP and direction!=(0,1) and p==False:
@@ -117,9 +120,18 @@ while running:
             if event.key == pg.K_RIGHT and direction!=(-1,0) and p==False:
                 direction= (1,0)
                 p=True
+            if lost==True and event.key== pg.K_r:
+                lost =False
+                direction = (1, 0)
+                fruit = (3, 3)
+                score=0
+                snake = [
+                    (1, 0),
+                    (0, 0),
+                    (-1, 0),]
+
     snake,tail=move(snake,direction)
     fruit,score=eat(snake,fruit,tail,score)
 
-# Enfin on rajoute un appel à pg.quit()
-# Cet appel va permettre à Pygame de "bien s'éteindre" et éviter des bugs sous Windows
+
 pg.quit()
