@@ -3,29 +3,46 @@
 
 from random import randint, random
 import pygame as pg
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--larg',type=int)
+parser.add_argument('--haut',type=int)
+parser.add_argument('--taille',type=int)
+args = parser.parse_args()
+larg=args.larg
+haut=args.haut
+taille=args.taille
+if type(larg)!=int:
+    larg=30
+if type(haut)!=int:
+    haut=30
+if type(taille)!=int:
+    taille=20
 
 pg.init()
-screen = pg.display.set_mode((600, 600))
+screen = pg.display.set_mode((larg*taille, haut*taille))
 clock = pg.time.Clock()
 
-# on rajoute une condition à la boucle: si on la passe à False le programme s'arrête
+
+
 running = True
 
-direction = (-1, 0)
-fruit = (10, 10)
+direction = (1, 0)
+fruit = (3, 3)
 score=0
 snake = [
-    (10, 15),
-    (11, 15),
-    (12, 15),]
+    (3, 0),
+    (2, 0),
+    (1, 0),]
 lost=False
 
 def col_pos(a,color = (255, 0, 0)):
     for c in a:
-        x = 20*c[0] # coordonnée x (colonnes) en pixels
-        y = 20*c[1] # coordonnée y (lignes) en pixels
-        width = 20 # largeur du rectangle en pixels
-        height = 20 # hauteur du rectangle en pixels
+        x = taille*c[0] # coordonnée x (colonnes) en pixels
+        y = taille*c[1] # coordonnée y (lignes) en pixels
+        width = taille # largeur du rectangle en pixels
+        height = taille # hauteur du rectangle en pixels
         rect = pg.Rect(x, y, width, height)
         pg.draw.rect(screen, color, rect)
 
@@ -40,14 +57,14 @@ def eat(sn,fr,tail,sc):
         sn.append(tail)
         sc+=1
         while True:
-            fr=(randint(0,29),randint(0,29))
+            fr=(randint(0,larg-1),randint(0,haut-1))
             if fr not in sn:
                 break
         return fr,sc
     return fr,sc
 
 def lose(sn):
-    if (sn[0] in sn[1:]) or (sn[0][0]<0 or sn[0][0]>29 or sn[0][1]<0 or sn[0][1]>29):
+    if (sn[0] in sn[1:]) or (sn[0][0]<0 or sn[0][0]>larg-1 or sn[0][1]<0 or sn[0][1]>haut-1):
         return True
     return False
 
@@ -55,15 +72,15 @@ def lose(sn):
 while running:
     if lost==False:
         screen.fill((255,255,255))
-        for i in range(30):
-            for j in range(30):
+        for i in range(larg):
+            for j in range(haut):
                 if (i+j)%2==1:
-                    x = 20*i # coordonnée x (colonnes) en pixels
-                    y = 20*j # coordonnée y (lignes) en pixels
-                    width = 20 # largeur du rectangle en pixels
-                    height = 20 # hauteur du rectangle en pixels
+                    x = taille*i # coordonnée x (colonnes) en pixels
+                    y = taille*j # coordonnée y (lignes) en pixels
+                    width = taille # largeur du rectangle en pixels
+                    height = taille # hauteur du rectangle en pixels
                     rect = pg.Rect(x, y, width, height)
-                    # appel à la méthode draw.rect()
+                    
                     color = (0, 0, 0)
                     pg.draw.rect(screen, color, rect)
         
@@ -72,8 +89,7 @@ while running:
         pg.display.update()
         clock.tick(5)
         lost=lose(snake)
-        # on itère sur tous les évênements qui ont eu lieu depuis le précédent appel
-        # ici donc tous les évènements survenus durant la seconde précédente
+        
     else:
         pg.display.set_caption(f"Score: {score}")
     
@@ -103,6 +119,7 @@ while running:
                 p=True
     snake,tail=move(snake,direction)
     fruit,score=eat(snake,fruit,tail,score)
+
 # Enfin on rajoute un appel à pg.quit()
 # Cet appel va permettre à Pygame de "bien s'éteindre" et éviter des bugs sous Windows
 pg.quit()
