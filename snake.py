@@ -14,6 +14,12 @@ running = True
 direction = (-1, 0)
 fruit = (10, 10)
 score=0
+snake = [
+    (10, 15),
+    (11, 15),
+    (12, 15),]
+lost=False
+
 def col_pos(a,color = (255, 0, 0)):
     for c in a:
         x = 20*c[0] # coordonnée x (colonnes) en pixels
@@ -41,15 +47,10 @@ def eat(sn,fr,tail,sc):
     return fr,sc
 
 def lose(sn):
-    if sn[0] in sn[1:]:
+    if (sn[0] in sn[1:]) or (sn[0][0]<0 or sn[0][0]>29 or sn[0][1]<0 or sn[0][1]>29):
         return True
     return False
 
-snake = [
-    (10, 15),
-    (11, 15),
-    (12, 15),]
-lost=False
 
 while running:
     if lost==False:
