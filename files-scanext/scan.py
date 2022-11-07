@@ -20,7 +20,5 @@ def func(chaine,truc):
         print(t.stat().st_size, time)
         with open(t,'r') as f:
             print(f.readline())
-func('.','py')
-
 
 func(chaine,truc)
